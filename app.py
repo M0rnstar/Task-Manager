@@ -18,7 +18,7 @@ migrate = Migrate(app, db)
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def sign_in():
     return render_template("sign-in.html")
 
 
@@ -26,12 +26,13 @@ def index():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        print(f"Username: {form.username.data}")
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(email=form.email.data, password=hashed_password)
+        user = User(email=form.email.data, username=form.username.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash(f'Account created for {form.email.data}!', 'success')
-        return redirect(url_for('sign-in'))
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('sign_in'))
     return render_template('register.html', form=form)
 
 
