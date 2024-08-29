@@ -1,26 +1,20 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
+from models import db, User
+from forms import RegistrationForm
 
 app = Flask(__name__)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Task_Manager:40_manage_92@localhost/taskmanagement'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://task_user:4092manage4092@localhost/taskmanagement'
 app.config['SECRET_KEY'] = 'ht!4ioy3*890uGDS@03KJ&'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
 bcrypt = Bcrypt(app)
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(25), nullable=False)
-
-    def __repr__(self):
-        return f'<User {self.username}>'
+migrate = Migrate(app, db)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -30,11 +24,10 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    from forms import RegistrationForm
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(email=form.email.data, password_hash=hashed_password)
+        user = User(email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.email.data}!', 'success')
@@ -43,4 +36,6 @@ def register():
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

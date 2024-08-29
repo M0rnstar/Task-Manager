@@ -165,7 +165,11 @@
     <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
 
     <div class="form-floating ">
-      <input type="email" class="form-control rounded-0" id="floatingEmail" placeholder="Email" name="email" value="{{ form.email.data }}">
+      <input type="email"
+             class="form-control rounded-0"
+             id="floatingEmail"
+             placeholder="Email" name="email"
+             value="{{ form.email.data if form.email.data else '' }}">
       <label for="floatingEmail">Email</label>
         {% if form.email.errors %}
         <div class="text-danger">
