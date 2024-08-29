@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)https://getbootstrap.com/docs/5.3/examples/sign-in/ -->
-<html lang="en" data-bs-theme="dark">
+<html lang="ru" data-bs-theme="dark">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="{{ url_for('static', filename='js/color-modes.js') }}"></script>
-    <link rel="stylesheet" href="style.css" />
+    <script src="/Task menagment system/Task-Management/static/js/color-modes.js"></script>
+    <link rel="stylesheet" href="/Task menagment system/Task-Management/static/css/style.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
-    <meta
-      name="author"
-      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-    />
     <meta name="generator" content="Hugo 0.122.0" />
     <title>Signin Template · Bootstrap v5.3</title>
 
@@ -22,15 +17,15 @@
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/css@3') }}"
+      href="/Task menagment system/Task-Management/static/css/css@3"
     />
 
     <link
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
+    href="/Task menagment system/Task-Management/static/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
 
     <!-- Favicons -->
     <link
@@ -67,7 +62,7 @@
 
     <!-- Custom styles for this template -->
     <link
-      href="{{ url_for('static', filename='css/sign-in.css') }}"
+      href="/Task menagment system/Task-Management/static/css/sign-in.css"
       rel="stylesheet"
     />
   </head>
@@ -170,34 +165,23 @@
     </div>
 
     <main class="form-signin w-100 m-auto">
-      <form method="POST" action="{{ url_for('register') }}">
-        {{ form.hidden_tag() }}
         <img
           class="mb-4"
-          src="{{ url_for('static', filename='img/bootstrap-logo.svg') }}"
+          src="/Task menagment system/Task-Management/static/img/bootstrap-logo.svg"
           alt=""
           width="72"
           height="57"
         />
-        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+        <h1 class="h3 mb-3 fw-normal">Please register</h1>
 
         <div class="form-floating">
           <input
-            type="email"
-            class="form-control rounded-0"
-            id="floatingEmail"
-            placeholder="Email"
-            name="email"
-            value="{{ form.email.data }}"
+          type="email"
+          class="form-control "
+          id="floatingInput"
+          placeholder="name@example.com"
           />
           <label for="floatingEmail">Email</label>
-          {% if form.email.errors %}
-          <div class="text-danger">
-            {% for error in form.email.errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
-          </div>
-          {% endif %}
         </div>
 
         <div class="form-floating">
@@ -205,49 +189,33 @@
           type="Username"
           class="form-control "
           id="floatingInput"
-          placeholder="Jhon"
+          placeholder="Username"
           />
           <label for="floatingUsername">Username</label>
         </div>
 
         <div class="form-floating">
           <input
-            type="password"
-            class="form-control rounded-0"
-            id="floatingPassword"
-            placeholder="Password"
-            name="password"
+          type="password"
+          class="form-control rounded-0"
+          id="floatingPassword"
+          placeholder="Password"
           />
           <label for="floatingPassword">Password</label>
-          {% if form.password.errors %}
-          <div class="text-danger">
-            {% for error in form.password.errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
-          </div>
-          {% endif %}
         </div>
 
         <div class="form-floating">
           <input
-            type="Password"
-            class="form-control"
-            id="floatingConfirmPassword"
-            placeholder="Confirm Password"
-            name="confirm_password"
+          type="password"
+          class="form-control"
+          id="floatingCofirmPassword"
+          placeholder="Password"
           />
           <label for="floatingConfirmPassword">Confirm Password</label>
-          {% if form.confirm_password.errors %}
-          <div class="text-danger">
-            {% for error in form.confirm_password.errors %}
-            <p>{{ error }}</p>
-            {% endfor %}
-          </div>
-          {% endif %}
         </div>
 
         <button class="btn btn-primary w-100 py-2 mb-2 mt-3" type="submit">
-          Sign up
+          Register
         </button>
 
         </button>
@@ -256,13 +224,12 @@
           class="btn btn-secondary w-100 py-2"
           type="submit"
         >
-          Sign in</a
+          Login</a
         >
-
       </form>
     </main>
     <script
-      src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"
+      src="/Task menagment system/Task-Management/static/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
