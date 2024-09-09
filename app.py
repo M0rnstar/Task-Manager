@@ -18,8 +18,8 @@ migrate = Migrate(app, db)
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template("sign-in.html")
+def login():
+    return render_template("login/index.html")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -31,8 +31,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('sign_in'))
-    return render_template('register.html', form=form)
+        return redirect(url_for('login'))
+    return render_template('register/index.html', form=form)
 
 
 if __name__ == "__main__":

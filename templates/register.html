@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!-- saved from url=(0051)https://getbootstrap.com/docs/5.3/examples/sign-in/ -->
 <html lang="en" data-bs-theme="dark">
   <head>
@@ -200,12 +200,12 @@
 
         <div class="form-floating">
           <input
-          type="text"
-          class="form-control rounded-0"
-          id="floatingUsername"
-          placeholder="Username"
-          name="username"
-          value="{{ form.username.data if form.username.data else '' }}"
+            type="text"
+            class="form-control rounded-0"
+            id="floatingUsername"
+            placeholder="Username"
+            name="username"
+            value="{{ form.username.data if form.username.data else '' }}"
           />
           <label for="floatingUsername">Username</label>
           {% if form.username.errors %}
@@ -258,12 +258,12 @@
         </button>
       </form>
       <a
-          href="{{ url_for('sign_in') }}"
-          class="btn btn-secondary w-100 py-2"
-          type="submit"
-        >
-          Login</a
-        >
+        href="{{ url_for('sign_in') }}"
+        class="btn btn-secondary w-100 py-2"
+        type="submit"
+      >
+        Login</a
+      >
     </main>
     <script
       src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"
