@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, login_required, logout_user
 from models import db, User
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, ResetForm
 
 app = Flask(__name__)
 
@@ -54,6 +54,20 @@ def register():
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('login'))
     return render_template('register/index.html', form=form)
+
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    form = ResetForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            user.password = hashed_password
+            db.session.commit()
+            print('Пароль закоммичен')
+            return redirect(url_for('login'))
+    return render_template('forgot_password/index.html', form=form)
 
 
 @app.route('/dashboard')

@@ -29,7 +29,11 @@ Login
         >
           Sign in to your account
         </h1>
-        <form class="space-y-4 md:space-y-6" action="{{ url_for('login') }}" method="POST">
+        <form
+          class="space-y-4 md:space-y-6"
+          action="{{ url_for('login') }}"
+          method="POST"
+        >
           {{ form.hidden_tag() }}
           <div>
             <label
@@ -78,7 +82,7 @@ Login
               </div>
             </div>
             <a
-              href="#"
+              href="{{ url_for('reset_password') }}"
               class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
               >Forgot password?</a
             >
