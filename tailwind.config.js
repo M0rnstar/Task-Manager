@@ -1,6 +1,6 @@
 // tailwind.config.js
 module.exports = {
-  darkMode: 'selector',
+  darkMode: 'class',
   content: [
     "./templates/**/*.html",
     "./static/src/**/*.js",
