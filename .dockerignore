@@ -1,0 +1,7 @@
+venv
+node_modules
+.gitignore/
+__pychache__/
+.idea/
+.git/
+migrations
