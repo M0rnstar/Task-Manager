@@ -3,6 +3,7 @@
     "tailwindcss": "^3.4.10"
   },
   "dependencies": {
+    "@fontsource/ubuntu": "^5.1.0",
     "flowbite": "^2.5.1"
   }
 }

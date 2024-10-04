@@ -7,8 +7,21 @@ module.exports = {
     "./node_modules/flowbite/**/*.js"
   ],
   theme: {
+    borderRadius: {
+        '[15]': '15.7px',
+        '[5]': '5px',
+    },
+    fontFamily: {
+        'ubuntu': ['Ubuntu', 'sans-serif'],
+    }
     extend: {
+      maxWidth: {
+        '1600': '1600px',
+      },
       colors: {
+        gray: {
+          "60": "#bebebe",
+        },
         primary: {
           "50": "#eff6ff",
           "100": "#dbeafe",
