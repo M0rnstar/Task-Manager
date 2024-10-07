@@ -1,9 +1,9 @@
-from flask import Flask, render_template, url_for, redirect, flash, session, request
+from flask import Flask, render_template, url_for, redirect, flash, session, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from models import db, User
+from models import db, User, Task
 from forms import RegistrationForm, LoginForm, ResetForm
 from datetime import timedelta
 
@@ -99,6 +99,37 @@ def logout():
     response = redirect(url_for('login'))
     response.delete_cookie('remember_token')
     return response
+
+
+@app.route('/api/add-task', methods=['POST'])
+def add_task():
+    task_data = request.json
+    title = task_data.get('title')
+    description = task_data.get('content')
+    deadline = task_data.get('deadline')
+
+    user = current_user
+    if user is None:
+        return jsonify({'message': 'Пользователь не авторизован'}), 401
+    new_task = Task(title=title, description=description, deadline=deadline, user_id=user.id)
+    db.session.add(new_task)
+    db.session.commit()
+
+    return jsonify({'message': 'Задача успешно добавлена', 'task': {'title': title, 'description': description, 'deadline': deadline}}), 201
+
+
+@app.route('/api/get-tasks', methods=['GET'])
+@login_required
+def get_tasks():
+    tasks = Task.query.filter_by(user_id=current_user.id).all()
+    tasks_list = []
+    for task in tasks:
+        tasks_list.append({
+            'title': task.title,
+            'content': task.description,
+            'deadline': task.deadline
+        })
+    return jsonify(tasks_list)
 
 
 if __name__ == "__main__":

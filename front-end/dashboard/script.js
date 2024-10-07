@@ -1,57 +1,175 @@
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function() {
-        // Убираем активный класс со всех элементов
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", function () {
+    // Убираем активный класс со всех элементов
+    document
+      .querySelectorAll(".nav-item")
+      .forEach((nav) => nav.classList.remove("active"));
 
-        // Добавляем активный класс текущему элементу
-        this.classList.add('active');
-    });
+    // Добавляем активный класс текущему элементу
+    this.classList.add("active");
+  });
 });
 
-// Находим кнопку
-const addTask = document.getElementById('addTask');
+// // Находим кнопку
+// const addTask = document.getElementById('addTask');
 
-// Находим контейнер с карточками
-const cardsContainer = document.querySelector('.cards');
+// // Находим контейнер с карточками
+// const cardsContainer = document.querySelector('.cards');
 
-// Добавляем обработчик события клика по кнопке
-addTask.addEventListener('click', function() {
-    // Создаём новую карточку с нужной структурой
-    const newCard = document.createElement('div');
-    newCard.classList.add('card');
+// // Добавляем обработчик события клика по кнопке
+// addTask.addEventListener('click', function() {
+//     // Создаём новую карточку с нужной структурой
+//     const newCard = document.createElement('div');
+//     newCard.classList.add('card');
+//     newCard.innerHTML = `
+//         <div class="card__content">
+//             <div class="card__left">
+//                 <input type="checkbox" class="checkbox" />
+//             </div>
+//             <div class="card__right">
+//                 <div class="card__deadline">До 31 мая</div>
+//                 <div class="card__title">Новая задача</div>
+//             </div>
+//         </div>
+//     `;
+
+//     // Добавляем новую карточку в контейнер
+//     cardsContainer.appendChild(newCard);
+// });
+
+const modal = document.getElementById("taskModal");
+const openModalBtn = document.getElementById("addTask");
+const closeBtn = document.getElementsByClassName("close")[0];
+const submitBtn = document.getElementById("submitModal");
+const cardsContainer = document.querySelector(".cards");
+
+let editingCard = null;
+let cardIdCounter = 0; // Счётчик для ID карточек
+
+// Открыть модальное окно при клике на кнопку
+openModalBtn.onclick = function () {
+  modal.style.display = "block";
+  clearModalFields();
+  editingCard = null;
+};
+
+// Закрыть окно при клике на Х
+closeBtn.onclick = function () {
+  modal.style.display = "none";
+};
+
+// Закрыть окно при клике вне его области
+window.addEventListener("mousedown", function (event) {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+// Очистка полей модального окна
+function clearModalFields() {
+  document.getElementById("modalTitle").value = "";
+  document.getElementById("modalContent").value = "";
+  document.getElementById("modalDeadline").value = ""; // Очищаем поле дедлайна
+}
+
+submitBtn.onclick = function () {
+  const title = document.getElementById("modalTitle").value;
+  const content = document.getElementById("modalContent").value;
+  const deadline = document.getElementById("modalDeadline").value; // Получаем дедлайн
+
+  if (editingCard) {
+    // Обновляем title, content и deadline
+    editingCard.querySelector(".card__title").textContent = title;
+    editingCard.querySelector(".card__deadline").textContent = `До ${deadline}`;
+    editingCard.dataset.title = title;
+    editingCard.dataset.content = content;
+    editingCard.dataset.deadline = deadline; // Обновляем dataset дедлайна
+    editingCard = null; // Сбрасываем editingCard после обновления
+  } else {
+    // Создаём новую карточку
+    cardIdCounter++; // Увеличиваем счётчик ID
+    const newCard = document.createElement("div");
+    newCard.classList.add("card");
+
+    // Сохраняем данные в dataset
+    newCard.dataset.id = cardIdCounter; // Присваиваем ID карточке
+    newCard.dataset.title = title;
+    newCard.dataset.content = content;
+    newCard.dataset.deadline = deadline; // Сохраняем дедлайн
+
     newCard.innerHTML = `
         <div class="card__content">
-            <div class="card__left">
-                <input type="checkbox" class="checkbox" />
-            </div>
-            <div class="card__right">
-                <div class="card__deadline">До 31 мая</div>
-                <div class="card__title">Новая задача</div>
-            </div>
+          <div class="card__left">
+            <input type="checkbox" class="checkbox" />
+          </div>
+          <div class="card__right">
+            <div class="card__deadline">До ${deadline}</div>
+            <div class="card__title">${title}</div>
+          </div>
         </div>
     `;
 
-    // Добавляем новую карточку в контейнер
+    // Добавляем карточку в контейнер
     cardsContainer.appendChild(newCard);
-});
+
+    // Обработчик только для card__right
+    newCard.querySelector(".card__right").onclick = function () {
+      modal.style.display = "block";
+      document.getElementById("modalTitle").value = newCard.dataset.title;
+      document.getElementById("modalContent").value = newCard.dataset.content;
+      document.getElementById("modalDeadline").value = newCard.dataset.deadline; // Устанавливаем дедлайн в модальном окне
+      editingCard = newCard; // Устанавливаем editingCard на новую карточку
+    };
+
+    // Отправляем POST-запрос на сервер при создании новой карточки
+    const taskData = {
+      title: title,
+      content: content,
+      deadline: deadline,
+    };
+
+    fetch("/api/add-task", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(taskData), // Преобразуем объект в JSON
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          console.log(data.message); // Логируем сообщение о добавлении задачи
+        }
+      })
+      .catch((error) => console.error("Ошибка:", error)); // Обрабатываем возможные ошибки
+  }
+
+  modal.style.display = "none"; // Закрываем модальное окно
+};
 
 // Получаем элементы
-const username = document.getElementById('username');
-const dropdownMenu = document.getElementById('dropdownMenu');
+const username = document.getElementById("username");
+const dropdownMenu = document.getElementById("dropdownMenu");
 
 // Открываем/закрываем шторку при клике на никнейм
-username.addEventListener('click', function() {
-    // Переключаем display между 'none' и 'block'
-    if (dropdownMenu.style.display === 'none' || dropdownMenu.style.display === '') {
-        dropdownMenu.style.display = 'block';
-    } else {
-        dropdownMenu.style.display = 'none';
-    }
+username.addEventListener("click", function () {
+  // Переключаем display между 'none' и 'block'
+  if (
+    dropdownMenu.style.display === "none" ||
+    dropdownMenu.style.display === ""
+  ) {
+    dropdownMenu.style.display = "block";
+  } else {
+    dropdownMenu.style.display = "none";
+  }
 });
 
 // Закрываем шторку, если клик был вне меню
-window.addEventListener('click', function(event) {
-    if (!event.target.closest('#username') && !event.target.closest('#dropdownMenu')) {
-        dropdownMenu.style.display = 'none';
-    }
+window.addEventListener("click", function (event) {
+  if (
+    !event.target.closest("#username") &&
+    !event.target.closest("#dropdownMenu")
+  ) {
+    dropdownMenu.style.display = "none";
+  }
 });
