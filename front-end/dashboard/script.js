@@ -10,33 +10,6 @@ document.querySelectorAll(".nav-item").forEach((item) => {
   });
 });
 
-// // Находим кнопку
-// const addTask = document.getElementById('addTask');
-
-// // Находим контейнер с карточками
-// const cardsContainer = document.querySelector('.cards');
-
-// // Добавляем обработчик события клика по кнопке
-// addTask.addEventListener('click', function() {
-//     // Создаём новую карточку с нужной структурой
-//     const newCard = document.createElement('div');
-//     newCard.classList.add('card');
-//     newCard.innerHTML = `
-//         <div class="card__content">
-//             <div class="card__left">
-//                 <input type="checkbox" class="checkbox" />
-//             </div>
-//             <div class="card__right">
-//                 <div class="card__deadline">До 31 мая</div>
-//                 <div class="card__title">Новая задача</div>
-//             </div>
-//         </div>
-//     `;
-
-//     // Добавляем новую карточку в контейнер
-//     cardsContainer.appendChild(newCard);
-// });
-
 const modal = document.getElementById("taskModal");
 const openModalBtn = document.getElementById("addTask");
 const closeBtn = document.getElementsByClassName("close")[0];
@@ -99,6 +72,7 @@ submitBtn.onclick = function () {
 
     newCard.innerHTML = `
         <div class="card__content">
+        <div class="card__main">
           <div class="card__left">
             <input type="checkbox" class="checkbox" />
           </div>
@@ -106,11 +80,19 @@ submitBtn.onclick = function () {
             <div class="card__deadline">До ${deadline}</div>
             <div class="card__title">${title}</div>
           </div>
+          </div>
+          <div class="card__close">&times;</div>
         </div>
     `;
 
     // Добавляем карточку в контейнер
     cardsContainer.appendChild(newCard);
+    const closeButton = newCard.querySelector(".card__close");
+
+    // Обработка события клика на крестик (если нужно удаление)
+    closeButton.addEventListener("click", function () {
+      newCard.remove(); // Удаляем карточку при нажатии на крестик
+    });
 
     // Обработчик только для card__right
     newCard.querySelector(".card__right").onclick = function () {
@@ -164,7 +146,7 @@ username.addEventListener("click", function () {
   }
 });
 
-// Закрываем шторку, если клик был вне меню
+//Закрываем шторку, если клик был вне меню
 window.addEventListener("click", function (event) {
   if (
     !event.target.closest("#username") &&

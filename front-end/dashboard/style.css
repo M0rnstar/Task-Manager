@@ -149,6 +149,10 @@ body {
 }
 
 .card__content {
+  display: flex;
+}
+
+.card__main {
   padding: 10px;
   height: 37px;
   display: flex;
@@ -185,6 +189,18 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.card__close {
+  font-size: 20px;
+  color: #aaa;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+
+.card__content:hover .card__close {
+  opacity: 1;
 }
 
 .task-modal {

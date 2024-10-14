@@ -1,3 +1,21 @@
+// Функция для генерации HTML карточки
+function createCardHTML(title, deadline) {
+  return `
+    <div class="card__content">
+      <div class="card__main">
+        <div class="card__left">
+          <input type="checkbox" class="checkbox" />
+        </div>
+        <div class="card__right">
+          <div class="card__deadline">До ${deadline}</div>
+          <div class="card__title">${title}</div>
+        </div>
+      </div>
+      <div class="card__close">&times;</div>
+    </div>
+  `;
+}
+
 document.querySelectorAll(".nav-item").forEach((item) => {
   item.addEventListener("click", function () {
     // Убираем активный класс со всех элементов
@@ -50,25 +68,41 @@ function displayTask(task) {
   const newCard = document.createElement("div");
   newCard.classList.add("card");
 
-  // Сохраняем данные в dataset
+  // Сохраняем ID задачи в data-id
+  newCard.dataset.id = task.id; // Предположим, что task содержит поле id
   newCard.dataset.title = task.title;
   newCard.dataset.content = task.content;
   newCard.dataset.deadline = task.deadline;
 
-  newCard.innerHTML = `
-    <div class="card__content">
-      <div class="card__left">
-        <input type="checkbox" class="checkbox" />
-      </div>
-      <div class="card__right">
-        <div class="card__deadline">До ${task.deadline}</div>
-        <div class="card__title">${task.title}</div>
-      </div>
-    </div>
-  `;
+  newCard.innerHTML = createCardHTML(task.title, task.deadline);
 
   // Добавляем карточку в контейнер
   cardsContainer.appendChild(newCard);
+
+  const closeButton = newCard.querySelector(".card__close");
+
+  // Обработка события клика на крестик (если нужно удаление)
+  closeButton.addEventListener("click", function () {
+    const cardId = newCard.dataset.id; // Теперь получаем правильный ID
+
+    if (cardId) {
+      // Отправляем DELETE-запрос на сервер для удаления задачи
+      fetch(`/api/delete-task/${cardId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            newCard.remove(); // Удаляем карточку с фронтенда
+          } else {
+            console.error("Ошибка при удалении задачи");
+            console.log(`Attempting to delete task with ID: ${cardId}`);
+          }
+        })
+        .catch((error) => console.error("Ошибка:", error));
+    } else {
+      console.error("Ошибка: ID задачи не найден");
+    }
+  });
 
   // Обработчик для открытия модального окна при клике на карточку
   newCard.querySelector(".card__right").onclick = function () {
@@ -82,14 +116,14 @@ function displayTask(task) {
 
 // Загружаем задачи с сервера при загрузке страницы
 window.onload = function () {
-  fetch('/api/get-tasks')  // Отправляем GET-запрос
-    .then(response => response.json())  // Преобразуем ответ в JSON
-    .then(tasks => {
-      tasks.forEach(task => {
-        displayTask(task);  // Отображаем каждую задачу
+  fetch("/api/get-tasks") // Отправляем GET-запрос
+    .then((response) => response.json()) // Преобразуем ответ в JSON
+    .then((tasks) => {
+      tasks.forEach((task) => {
+        displayTask(task); // Отображаем каждую задачу
       });
     })
-    .catch(error => console.error('Ошибка при загрузке задач:', error));
+    .catch((error) => console.error("Ошибка при загрузке задач:", error));
 };
 
 submitBtn.onclick = function () {
@@ -117,20 +151,30 @@ submitBtn.onclick = function () {
     newCard.dataset.content = content;
     newCard.dataset.deadline = deadline; // Сохраняем дедлайн
 
-    newCard.innerHTML = `
-        <div class="card__content">
-          <div class="card__left">
-            <input type="checkbox" class="checkbox" />
-          </div>
-          <div class="card__right">
-            <div class="card__deadline">До ${deadline}</div>
-            <div class="card__title">${title}</div>
-          </div>
-        </div>
-    `;
+    newCard.innerHTML = createCardHTML(title, deadline);
 
     // Добавляем карточку в контейнер
     cardsContainer.appendChild(newCard);
+    const closeButton = newCard.querySelector(".card__close");
+
+    // Обработка события клика на крестик
+    closeButton.addEventListener("click", function () {
+      const cardId = newCard.dataset.id; // Предположим, что у карточки есть уникальный ID
+
+      // Отправляем DELETE-запрос на сервер для удаления задачи
+      fetch(`/api/delete-task/${cardId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Если запрос успешный, удаляем карточку с фронтенда
+            newCard.remove();
+          } else {
+            console.error("Ошибка при удалении задачи");
+          }
+        })
+        .catch((error) => console.error("Ошибка:", error));
+    });
 
     // Обработчик только для card__right
     newCard.querySelector(".card__right").onclick = function () {
@@ -166,8 +210,6 @@ submitBtn.onclick = function () {
 
   modal.style.display = "none"; // Закрываем модальное окно
 };
-
-
 
 // Получаем элементы
 const username = document.getElementById("username");

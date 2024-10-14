@@ -127,10 +127,22 @@ def get_tasks():
         tasks_list.append({
             'title': task.title,
             'content': task.description,
-            'deadline': task.deadline
+            'deadline': task.deadline,
+            'id': task.id
         })
     return jsonify(tasks_list)
 
+@app.route('/api/delete-task/<int:id>', methods=['DELETE'])
+@login_required
+def delete_task(id):
+    task = Task.query.get_or_404(id)
+
+    if task.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'})
+
+    db.session.delete(task)
+    db.session.commit()
+    return jsonify({'message': 'Task deleted successfully'})
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -158,6 +158,18 @@ body {
   height: 37px;
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.card__content {
+  display: flex;
+}
+
+.card__main {
+  padding: 5px;
+  height: 37px;
+  display: flex;
+  align-items: center;
 }
 
 .card__left {
@@ -190,6 +202,25 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.card__close {
+  font-size: 20px;
+  color: #aaa;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  right: 5px;
+}
+
+.card__close:hover {
+  color: #000;
+}
+
+.card__content:hover .card__close {
+  opacity: 1;
 }
 
 .task-modal {
