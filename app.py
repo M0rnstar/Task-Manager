@@ -107,7 +107,6 @@ def add_task():
     title = task_data.get('title')
     description = task_data.get('content')
     deadline = task_data.get('deadline')
-
     user = current_user
     if user is None:
         return jsonify({'message': 'Пользователь не авторизован'}), 401
@@ -143,6 +142,30 @@ def delete_task(id):
     db.session.delete(task)
     db.session.commit()
     return jsonify({'message': 'Task deleted successfully'})
+
+@app.route('/api/update-task/<int:id>', methods=['PUT'])
+def update_task(id):
+    data = request.get_json()
+    title = data.get('title')
+    description = data.get('content')
+    deadline = data.get('deadline')
+
+    task = Task.query.get(id)
+
+
+    if task.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'})
+    
+    if not task:
+        return jsonify({'message': 'Task not found'}), 404
+    
+    task.title = title
+    task.description = description
+    task.deadline = deadline
+    
+    db.session.commit()
+
+    return jsonify({'message': 'Task updated successfully'})
 
 if __name__ == "__main__":
     app.run(debug=True)

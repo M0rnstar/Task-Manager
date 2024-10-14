@@ -132,12 +132,34 @@ submitBtn.onclick = function () {
   const deadline = document.getElementById("modalDeadline").value; // Получаем дедлайн
 
   if (editingCard) {
+    const cardId = editingCard.dataset.id; // Получаем ID карточки
+
     // Обновляем title, content и deadline
     editingCard.querySelector(".card__title").textContent = title;
     editingCard.querySelector(".card__deadline").textContent = `До ${deadline}`;
     editingCard.dataset.title = title;
     editingCard.dataset.content = content;
     editingCard.dataset.deadline = deadline; // Обновляем dataset дедлайна
+    const updatedTaskData = {
+      title: title,
+      content: content,
+      deadline: deadline,
+    };
+
+    fetch(`/api/update-task/${cardId}`, {
+      method: "PUT", // Используем метод PUT для обновления
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedTaskData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          console.log(data.message); // Логируем сообщение об обновлении задачи
+        }
+      })
+      .catch((error) => console.error("Ошибка:", error));
     editingCard = null; // Сбрасываем editingCard после обновления
   } else {
     // Создаём новую карточку
