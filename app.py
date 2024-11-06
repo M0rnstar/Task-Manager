@@ -6,11 +6,14 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from models import db, User, Task
 from forms import RegistrationForm, LoginForm, ResetForm
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 
+load_dotenv()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://task_user:4092manage4092@localhost/taskmanagement'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SECRET_KEY'] = 'ht!4ioy3*890uGDS@03KJ&'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
@@ -149,10 +152,7 @@ def update_task(id):
     title = data.get('title')
     description = data.get('content')
     deadline = data.get('deadline')
-
     task = Task.query.get(id)
-
-
     if task.user_id != current_user.id:
         return jsonify({'error': 'Unauthorized'})
     
@@ -164,8 +164,8 @@ def update_task(id):
     task.deadline = deadline
     
     db.session.commit()
-
     return jsonify({'message': 'Task updated successfully'})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
